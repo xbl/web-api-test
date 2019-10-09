@@ -295,6 +295,71 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "创建订单-锁库存失败",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {",
+									"    pm.response.to.have.status(500);",
+									"});",
+									"",
+									"pm.test(\"返回 json 格式的数据\", function () {",
+									"    var result = pm.response.json();",
+									"    pm.expect(result.message).to.be.an('string');",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"product_id\": 2,\n\t\"amount\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"event": [
