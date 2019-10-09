@@ -1,0 +1,23 @@
+post:
+  description: 锁库存
+  (controller): stores#lockStore
+  body:
+    application/json:
+      properties:
+        product_id:
+          description: 商品 ID
+          type: number
+          required: true
+    example: {}
+  responses:
+    200:
+      body:
+        example: |
+          { "code": 200 }
+    500:
+      body:
+        example: |
+          {
+            "code": 505,
+            "message": "锁库存失败！"
+          }

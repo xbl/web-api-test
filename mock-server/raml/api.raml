@@ -1,0 +1,21 @@
+#%RAML 1.0
+---
+title: hello demo API
+baseUri: /
+version: v1
+mediaType: application/json
+
+# 安全设置
+securitySchemes: !include ./securitySchemes.raml
+
+# 自定义资源 types，类似于资源模板，指定 type 可以减少代码，还可以覆盖模板
+resourceTypes: !include ./resourceTypes.raml
+
+# 相当于数据类型，可用于自动化测试作为验证条件
+types: !include ./types.raml
+
+#
+/orders: !include ./api/orders/index.raml
+
+/api/v1:
+  /stores: !include ./api/stores/index.raml

@@ -1,0 +1,10 @@
+{
+  "controller": "./controller",
+  "raml": "./raml",
+  "main": "api.raml",
+  "port": 3001,
+  "runner": {
+    "test": "http://localhost:3000",
+    "dev": "http://abc.com:3001"
+  }
+}

@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql:5.7.27
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - './volumes/mysql:/var/lib/mysql'
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    ports:
+      - 5432:5432
+    environment: 
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    volumes:
+      - './volumes/postgresql:/var/lib/postgresql/data'
+

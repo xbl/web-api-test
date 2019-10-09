@@ -1,0 +1,11 @@
+version: '2'
+services:
+  raml-mocker:
+    image: node:10-alpine
+    volumes:
+      - ./:/code/
+    working_dir: /code
+    command: sh -c "yarn && yarn start"
+    ports:
+      - "3000:3000"
+

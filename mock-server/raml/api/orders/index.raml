@@ -1,0 +1,29 @@
+get:
+  description: 订单列表
+  responses:
+    200:
+      body:
+        type: Order
+        example: !include ./orders_200.json
+/{id}:
+  get:
+    description: 订单详情
+    (uriParameters):
+      id:
+        description: order id
+        example: 1
+    responses:
+      200:
+        body:
+          example: !include ./order_detail_200.json
+  delete:
+    description: 删除订单
+    (uriParameters):
+      id:
+        description: order id
+        example: 1
+    responses:
+      200:
+        body:
+          example: |
+            {}
