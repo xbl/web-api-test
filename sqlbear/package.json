@@ -1,0 +1,20 @@
+{
+  "name": "sqlbear-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "web.js",
+  "scripts": {
+    "start": "node web.js ./sqlbear ./scripts/%s.sql"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xbl/sqlbear-starter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xbl/sqlbear-starter/issues"
+  },
+  "homepage": "https://github.com/xbl/sqlbear-starter#readme"
+}
