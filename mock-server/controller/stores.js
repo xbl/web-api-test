@@ -4,5 +4,5 @@ exports.lockStore = (req, res, webApi) => {
     res.json({code: 200});
     return ;
   }
-  res.json({code: 500, message: '锁库存失败！'});
+  res.status(500).json({code: 500, message: '锁库存失败！'});
 }

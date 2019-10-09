@@ -10,9 +10,10 @@ app.use('/orders', require('./src/orders'));
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-app.use((err, req, res) => {
-    console.log(err.stack);
-    res.status(500).json({ message: err.message});
+// error handler 必须有 next 参数
+app.use(function (err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).json({message: err.message});
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
