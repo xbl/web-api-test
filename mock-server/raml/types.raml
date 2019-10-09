@@ -21,3 +21,15 @@ Order:
       type: string
       required: true
       description: 商品名称 ID
+
+SimpleOrder:
+  type: object
+  properties:
+    amount:
+      type: number
+      required: true
+      description: 商品数量
+    product_id:
+      type: number
+      required: true
+      description: 商品 ID

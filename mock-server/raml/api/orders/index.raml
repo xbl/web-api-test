@@ -5,6 +5,23 @@ get:
       body:
         type: Order
         example: !include ./orders_200.json
+post:
+  description: 创建订单
+  body:
+    application/json:
+    type: SimpleOrder
+    example: |
+      {
+        "product_id":1,
+        "amount": 10
+      }
+  responses:
+    200:
+      body:
+        example: |
+          {
+              "order_id": 1
+          }
 /{id}:
   get:
     description: 订单详情
