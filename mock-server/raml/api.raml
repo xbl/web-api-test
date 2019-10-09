@@ -1,8 +1,8 @@
 #%RAML 1.0
 ---
-title: hello demo API
+title: 订单系统 API
 baseUri: http://localhost:3001
-version: v1
+version: 1
 mediaType: application/json
 
 # 安全设置
@@ -17,5 +17,6 @@ types: !include ./types.raml
 #
 /orders: !include ./api/orders/index.raml
 
+# 模拟外部库存系统
 /api/v1:
   /stores: !include ./api/stores/index.raml
