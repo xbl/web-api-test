@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "@xbl/raml-mocker": "^2.0.3",
+    "@xbl/raml-mocker": "^2.0.4",
     "raml2html": "^7.4.0",
     "raml2html-modern-theme": "^1.0.8"
   },
@@ -18,7 +18,7 @@
     "build": "raml2html --theme 'raml2html-modern-theme' ./raml/api.raml > api.html",
     "watch": "chokidar \"./raml/**/*.*\" -c \"npm run build\"",
     "test": "raml-runner",
-    "test:dev": "cross-env NODE_ENV=dev raml-runner",
+    "test:dev": "cross-env NODE_ENV=test raml-runner",
     "test:api": "mocha"
   },
   "keywords": [],

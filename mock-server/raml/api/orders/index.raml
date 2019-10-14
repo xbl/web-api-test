@@ -29,13 +29,13 @@ post:
               "code": 500,
               "message": "创建订单失败！"
           }
-/{id}:
+/{orderId}:
   get:
     description: 订单详情
     (uriParameters):
-      id:
+      orderId:
         description: order id
-        example: 1
+        example: abc
     responses:
       200:
         body:
