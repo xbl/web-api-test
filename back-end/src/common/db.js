@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
+    connectionLimit : 10,
     host     : 'localhost',
     user     : 'root',
     password : 'example',
@@ -9,16 +10,21 @@ const connection = mysql.createConnection({
 
 const query = (sql, values) => {
     return new Promise((resolve, reject) => {
-        const query = connection.query(sql, values, (error, results, fields) => {
-            if (error) {
+        pool.getConnection(function(err, connection) {
+            if (err) {
                 return reject(error);
             }
-            resolve(results, fields);
+            const query = connection.query(sql, values, (error, results, fields) => {
+                connection.release();
+                if (error) {
+                    return reject(error);
+                }
+                resolve(results, fields);
+            });
+            console.log(query.sql);
         });
-        console.log(query.sql);
     });
 }
-connection.connect();
 
 module.exports = {
     async execute (sql, values) {
@@ -28,7 +34,6 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-        // connection.end();
         return result;
     }
 }
