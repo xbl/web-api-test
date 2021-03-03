@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "31fac543-69a0-4982-9767-3731a67716fc",
+		"_postman_id": "621348f4-857c-431f-a0bb-27729837274a",
 		"name": "订单系统",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -9,43 +9,26 @@
 			"name": "订单详情",
 			"item": [
 				{
-					"name": "订单列表",
+					"name": "获取订单列表",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
-									"    var orders = pm.response.json();",
-									"    orders.forEach(order => {",
-									"        ",
-									"        if (order.order_id === 1) {",
-									"            pm.globals.set(\"order_1\", order);",
-									"        }",
-									"        ",
-									"        pm.expect(order.order_id).to.be.an('number');",
-									"        pm.expect(order.product_id).to.be.an('number');",
-									"        pm.expect(order.name).to.be.an('string');",
+									"pm.test(\"验证返回订单内容\", function () {",
+									"    var orderList = pm.response.json();",
+									"    orderList.forEach(function(order) {",
+									"        pm.expect(order.order_id).to.be.a('number');",
 									"    });",
+									"",
+									"    pm.collectionVariables.set(\"orderId\", orderList[0].order_id);",
 									"});",
+									"",
 									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
-									"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_insert_order\", function (err, response) {",
-									"    console.log(response.text());",
-									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -55,12 +38,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8083/orders",
+							"raw": "http://{{host}}/orders",
 							"protocol": "http",
 							"host": [
-								"localhost"
+								"{{host}}"
 							],
-							"port": "8083",
 							"path": [
 								"orders"
 							]
@@ -69,47 +51,22 @@
 					"response": []
 				},
 				{
-					"name": "订单详情",
+					"name": "获取订单详情",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
+									"pm.test(\"订单详情是否包含订单id且id 为数字\", function () {",
 									"    var order = pm.response.json();",
-									"    ",
-									"    pm.expect(order.order_id).to.be.an('number');",
-									"    pm.expect(order.product_id).to.be.an('number');",
-									"    pm.expect(order.name).to.be.an('string');",
-									"    ",
+									"    pm.expect(order.order_id).to.be.a('number');",
+									"    var orderId = pm.collectionVariables.get(\"orderId\");",
+									"    pm.expect(order.order_id).to.eql(orderId);",
 									"});",
-									"",
-									"pm.test(\"验证列表数据与详情是否一致\", function() {",
-									"    var orderOfList = pm.globals.get(\"order_1\");",
-									"    var order = pm.response.json();",
-									"    pm.expect(order).to.be.deep.equal(order);",
-									"    ",
-									"    pm.globals.unset(\"order_1\");",
-									"});",
-									"",
-									"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_delete_order\", function (err, response) {",
-									"    console.log(response.text());",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
 									""
 								],
 								"type": "text/javascript"
@@ -120,7 +77,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8083/orders/1",
+							"raw": "http://localhost:8083/orders/{{orderId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -128,38 +85,13 @@
 							"port": "8083",
 							"path": [
 								"orders",
-								"1"
+								"{{orderId}}"
 							]
 						}
 					},
 					"response": []
 				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "32410a70-ee59-4318-b567-f79f2baabd60",
-						"type": "text/javascript",
-						"exec": [
-							"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_insert_order\", function (err, response) {",
-							"    console.log(response.text());",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d13d7343-1765-46ed-857e-8c3b3e0f6640",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "创建订单",
@@ -168,257 +100,26 @@
 					"name": "创建订单",
 					"event": [
 						{
-							"listen": "test",
-							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
-									"    var result = pm.response.json();",
-									"    pm.expect(result.order_id).to.be.an('number');",
-									"    ",
-									"    pm.globals.set(\"order_id\", result.order_id);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
 							"listen": "prerequest",
 							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
 								"exec": [
 									""
 								],
 								"type": "text/javascript"
 							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"product_id\":1,\n\t\"amount\": 10\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
 						},
-						"url": {
-							"raw": "http://localhost:8083/orders",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"orders"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "订单详情",
-					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
 									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
+									"pm.test(\"Your test name\", function () {",
 									"    var order = pm.response.json();",
-									"    pm.expect(order.order_id).to.be.an('number');",
-									"    pm.expect(order.product_id).to.be.an('number');",
-									"    pm.expect(order.name).to.be.an('string');",
-									"    ",
-									"});",
-									"",
-									"pm.test(\"验证列表数据与详情是否一致\", function() {",
-									"    var orderOfList = pm.globals.get(\"order_1\");",
-									"    var order = pm.response.json();",
-									"    pm.expect(order).to.be.deep.equal(order);",
-									"    ",
-									"    pm.globals.unset(\"order_1\");",
-									"});",
-									"",
-									"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_delete_order\", function (err, response) {",
-									"    console.log(response.text());",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8083/orders/{{order_id}}",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"orders",
-								"{{order_id}}"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "创建订单-锁库存失败",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
-								"exec": [
-									"pm.test(\"Status code is 500\", function () {",
-									"    pm.response.to.have.status(500);",
-									"});",
-									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
-									"    var result = pm.response.json();",
-									"    pm.expect(result.message).to.be.an('string');",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"name": "Content-Type",
-								"type": "text",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"product_id\": 2,\n\t\"amount\": 10\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8083/orders",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"orders"
-							]
-						}
-					},
-					"response": []
-				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "32410a70-ee59-4318-b567-f79f2baabd60",
-						"type": "text/javascript",
-						"exec": [
-							"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_insert_order\", function (err, response) {",
-							"    console.log(response.text());",
-							"});"
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "d13d7343-1765-46ed-857e-8c3b3e0f6640",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			],
-			"protocolProfileBehavior": {}
-		},
-		{
-			"name": "删除订单",
-			"item": [
-				{
-					"name": "删除前的订单列表",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
-									"    var orders = pm.response.json();",
-									"    pm.globals.set(\"orders_length\", orders.length);",
-									"});",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
-									"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_insert_order\", function (err, response) {",
-									"    console.log(response.text());",
+									"    pm.expect(order.order_id).to.be.a('number');",
+									"    pm.collectionVariables.set(\"orderId\", order.order_id);",
 									"});"
 								],
 								"type": "text/javascript"
@@ -426,8 +127,17 @@
 						}
 					],
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\":1,\n  \"amount\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8083/orders",
 							"protocol": "http",
@@ -443,17 +153,122 @@
 					"response": []
 				},
 				{
-					"name": "删除订单",
+					"name": "获取订单详情",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
-								"id": "2d7dee19-e391-4969-850a-acb7c0896c3e",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {",
 									"    pm.response.to.have.status(200);",
 									"});",
+									"",
+									"pm.test(\"订单详情是否包含订单id且id 为数字\", function () {",
+									"    var order = pm.response.json();",
+									"    pm.expect(order.order_id).to.be.a('number');",
+									"    var orderId = pm.collectionVariables.get(\"orderId\");",
+									"    pm.expect(order.order_id).to.eql(orderId);",
+									"});",
 									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8083/orders/{{orderId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "删除订单",
+			"item": [
+				{
+					"name": "创建订单",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Your test name\", function () {",
+									"    var order = pm.response.json();",
+									"    pm.expect(order.order_id).to.be.a('number');",
+									"    pm.collectionVariables.set(\"orderId\", order.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\":1,\n  \"amount\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8083/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"删除订单\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('object');",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -463,7 +278,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8083/orders/1",
+							"raw": "http://localhost:8083/orders/{{orderId}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -471,127 +286,34 @@
 							"port": "8083",
 							"path": [
 								"orders",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "删除后的订单列表",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"",
-									"pm.test(\"返回 json 格式的数据\", function () {",
-									"    var orders = pm.response.json();",
-									"    var length =  pm.globals.get(\"orders_length\");",
-									"    pm.expect(orders.length).to.be.eql(Number(length) - 1);",
-									"    pm.globals.unset(\"orders_length\");",
-									"});",
-									"",
-									"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_delete_order\", function (err, response) {",
-									"    console.log(response.text());",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8083/orders",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8083",
-							"path": [
-								"orders"
+								"{{orderId}}"
 							]
 						}
 					},
 					"response": []
 				}
-			],
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "42a1eef8-7c5e-49bb-a54d-bdc18659b4a5",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"id": "bd1e9186-b377-444a-a960-aba3063829f3",
-						"type": "text/javascript",
-						"exec": [
-							""
-						]
-					}
-				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
-			"name": "订单列表",
+			"name": "获取订单列表",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "7ae13196-09b2-4915-afd6-dedfd4f2136f",
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
-							"pm.test(\"返回 json 格式的数据\", function () {",
-							"    var orders = pm.response.json();",
-							"    orders.forEach(order => {",
-							"        pm.expect(order.order_id).to.be.an('number');",
-							"        pm.expect(order.product_id).to.be.an('number');",
-							"        pm.expect(order.name).to.be.an('string');",
+							"pm.test(\"验证返回订单内容\", function () {",
+							"    var orderList = pm.response.json();",
+							"    orderList.forEach(function(order) {",
+							"        pm.expect(order.order_id).to.be.a('number');",
 							"    });",
+							"    ",
 							"});",
 							"",
-							"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_delete_order\", function (err, response) {",
-							"    console.log(response.text());",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"id": "2ded7579-2519-4ac9-95d2-3f9ec69638ea",
-						"exec": [
-							"pm.sendRequest(\"http://localhost:3000/sqlbear/mysql_insert_order\", function (err, response) {",
-							"    console.log(response.text());",
-							"});"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -601,12 +323,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8083/orders",
+					"raw": "http://{{host}}/orders",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{host}}"
 					],
-					"port": "8083",
 					"path": [
 						"orders"
 					]
@@ -615,5 +336,10 @@
 			"response": []
 		}
 	],
-	"protocolProfileBehavior": {}
+	"variable": [
+		{
+			"key": "orderId",
+			"value": ""
+		}
+	]
 }
