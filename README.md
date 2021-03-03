@@ -2,23 +2,30 @@
 
 ## 启动
 
-MySQL 数据库启动
+1. MySQL 数据库启动会自动初始化数据
 
 ```shell
 docker-compose up
 ```
 
-需要 nodejs 运行环境和java 环境。
+2. 启动 mock server，作为锁库存的挡板
 
-
-数据初始化
+```shell
+cd ./mock-server
+npm start
 ```
-http://localhost:3000/sqlbear/mysql_create_table
-http://localhost:3000/sqlbear/mysql_insert_order
 
-# 清理数据
-http://localhost:3000/sqlbear/mysql_delete_order
+3. 启动 app 
 
-http://localhost:3000/sqlbear/mysql_drop_table
+```shell
+cd ./back-end
+npm start
+```
+
+导出 post 脚本到`test/src`目录下
+
+```shell
+cd ./test
+npm test
 ```
 
