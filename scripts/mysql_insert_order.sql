@@ -1,3 +1,4 @@
+use orders;
 INSERT INTO `product` (`product_id`, `name`) VALUES (1, 'Iphone 11');
 INSERT INTO `product` (`product_id`, `name`) VALUES (2, 'HUAWEI Mate 20X');
 INSERT INTO `product` (`product_id`, `name`) VALUES (3, 'HUAWEI P30');

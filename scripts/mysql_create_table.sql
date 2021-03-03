@@ -1,4 +1,6 @@
--- CREATE DATABASE `orders` DEFAULT CHARACTER SET = `utf8` DEFAULT COLLATE = `utf8_bin`;
+CREATE DATABASE `orders` DEFAULT CHARACTER SET = `utf8` DEFAULT COLLATE = `utf8_bin`;
+
+use orders;
 
 CREATE TABLE `order` (
   `order_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
