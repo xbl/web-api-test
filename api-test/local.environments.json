@@ -1,0 +1,14 @@
+{
+	"id": "de997016-fb8e-412e-a430-35d3a44da3a3",
+	"name": "local",
+	"values": [
+		{
+			"key": "host",
+			"value": "localhost:8083",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2021-03-23T08:22:00.777Z",
+	"_postman_exported_using": "Postman/8.0.6"
+}
