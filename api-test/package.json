@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "newman run ./test/*.postman_collection.json -e ./local.environments.json"
+    "test": "node index.js -f ./test -e ./local.environments.json"
   },
   "keywords": [],
   "author": "",
