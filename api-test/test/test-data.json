@@ -1,0 +1,71 @@
+{
+  "valid_orders": [
+    {
+      "product_id": 1,
+      "amount": 1,
+      "expected_total": 100,
+      "description": "最小数量订单"
+    },
+    {
+      "product_id": 2,
+      "amount": 5,
+      "expected_total": 500,
+      "description": "正常数量订单"
+    },
+    {
+      "product_id": 3,
+      "amount": 10,
+      "expected_total": 1000,
+      "description": "大数量订单"
+    },
+    {
+      "product_id": 4,
+      "amount": 100,
+      "expected_total": 10000,
+      "description": "最大数量订单"
+    }
+  ],
+  "invalid_orders": [
+    {
+      "product_id": 0,
+      "amount": 1,
+      "expected_error": "Invalid product_id",
+      "description": "无效产品ID"
+    },
+    {
+      "product_id": 1,
+      "amount": 0,
+      "expected_error": "Invalid amount",
+      "description": "数量为0"
+    },
+    {
+      "product_id": 1,
+      "amount": -1,
+      "expected_error": "Invalid amount",
+      "description": "负数数量"
+    },
+    {
+      "product_id": 999,
+      "amount": 1,
+      "expected_error": "Product not found",
+      "description": "不存在的产品"
+    }
+  ],
+  "edge_cases": [
+    {
+      "product_id": 1,
+      "amount": 1,
+      "description": "边界值测试 - 最小数量"
+    },
+    {
+      "product_id": 1,
+      "amount": 999999,
+      "description": "边界值测试 - 超大数量"
+    },
+    {
+      "product_id": 1,
+      "amount": 1.5,
+      "description": "边界值测试 - 小数数量"
+    }
+  ]
+}

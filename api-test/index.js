@@ -19,12 +19,26 @@ fs.readdir(TEST_FOLDER, (err, data) => {
 });
 
 function runNewman(combinedCollection) {
+  // 加载环境变量
+  let environment = null;
+  if (ENVIRONMENTS) {
+    try {
+      environment = require(path.resolve(__dirname, ENVIRONMENTS));
+      console.log('环境变量加载成功:', environment.name);
+    } catch (error) {
+      console.error('环境变量加载失败:', error.message);
+    }
+  }
+
   newman.run({
     collection: combinedCollection,
     reporters: 'cli',
-    environment: ENVIRONMENTS && require(ENVIRONMENTS)
+    environment: environment
   }, function (err, summary) {
-    if (err) { throw err; }
+    if (err) {
+      console.error('Newman 运行错误:', err.message);
+      throw err;
+    }
     if (isNotEmpty(summary.run.failures)) {
       console.error('collection run error!');
       return process.exit(1);
@@ -46,11 +60,32 @@ function getCombinedCollection(data) {
     variable: []
   };
   const combinedCollection = collections.reduce((accumulator, currentValue) => {
-    const tempCollection = require(path.resolve(__dirname, currentValue));
-    accumulator.info.name += `_${tempCollection.info.name}`;
-    accumulator.item = accumulator.item.concat(tempCollection.item);
-    accumulator.variable = accumulator.variable.concat(tempCollection.variable);
-    return accumulator;
+    try {
+      const tempCollection = require(path.resolve(__dirname, currentValue));
+
+      // 安全检查：确保 tempCollection 和 tempCollection.info 存在
+      if (tempCollection && tempCollection.info && tempCollection.info.name) {
+        accumulator.info.name += `_${tempCollection.info.name}`;
+      } else {
+        // 如果没有 name，使用文件名作为替代
+        const fileName = path.basename(currentValue, '.json');
+        accumulator.info.name += `_${fileName}`;
+      }
+
+      // 安全检查：确保 item 和 variable 是数组
+      if (tempCollection && Array.isArray(tempCollection.item)) {
+        accumulator.item = accumulator.item.concat(tempCollection.item);
+      }
+
+      if (tempCollection && Array.isArray(tempCollection.variable)) {
+        accumulator.variable = accumulator.variable.concat(tempCollection.variable);
+      }
+
+      return accumulator;
+    } catch (error) {
+      console.warn(`警告: 无法加载集合文件 ${currentValue}: ${error.message}`);
+      return accumulator;
+    }
   }, defaultCollection);
   return combinedCollection;
 }

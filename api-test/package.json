@@ -1,15 +1,21 @@
 {
-  "name": "test",
+  "name": "api-test",
   "version": "1.0.0",
-  "description": "",
+  "description": "API 测试项目 - 专为初学者设计的接口测试演示和练习项目",
   "main": "index.js",
   "scripts": {
     "test": "node index.js -f ./test -e ./local.environments.json"
   },
-  "keywords": [],
+  "keywords": [
+    "api-test",
+    "newman",
+    "postman",
+    "接口测试",
+    "自动化测试"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "newman": "^5.2.2"
+    "newman": "^6.2.1"
   }
 }

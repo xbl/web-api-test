@@ -1,0 +1,559 @@
+{
+	"info": {
+		"_postman_id": "621348f4-857c-431f-a0bb-27729837274b",
+		"name": "订单系统_完整测试",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "基础功能测试",
+			"item": [
+				{
+					"name": "获取订单列表",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"响应时间应该小于 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"pm.test(\"响应应该是 JSON 格式\", function () {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"pm.test(\"验证返回订单内容\", function () {",
+									"    var orderList = pm.response.json();",
+									"    pm.expect(orderList).to.be.an('array');",
+									"    ",
+									"    if (orderList.length > 0) {",
+									"        orderList.forEach(function(order) {",
+									"            pm.expect(order).to.have.property('order_id');",
+									"            pm.expect(order.order_id).to.be.a('number');",
+									"            pm.expect(order).to.have.property('product_id');",
+									"            pm.expect(order).to.have.property('amount');",
+									"            pm.expect(order).to.have.property('total_price');",
+									"        });",
+									"        ",
+									"        // 保存第一个订单ID用于后续测试",
+									"        pm.variables.set(\"orderId\", orderList[0].order_id);",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取订单详情",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"响应时间应该小于 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"pm.test(\"订单详情验证\", function () {",
+									"    var order = pm.response.json();",
+									"    var orderId = pm.variables.get(\"orderId\");",
+									"    ",
+									"    pm.expect(order).to.have.property('order_id');",
+									"    pm.expect(order.order_id).to.be.a('number');",
+									"    pm.expect(order.order_id).to.eql(parseInt(orderId));",
+									"    pm.expect(order).to.have.property('product_id');",
+									"    pm.expect(order).to.have.property('amount');",
+									"    pm.expect(order).to.have.property('total_price');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/{{orderId}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"{{orderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "创建订单测试",
+			"item": [
+				{
+					"name": "创建有效订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"创建订单成功验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property('order_id');",
+									"    pm.expect(response.order_id).to.be.a('number');",
+									"    pm.expect(response.order_id).to.be.above(0);",
+									"    ",
+									"    // 保存新创建的订单ID",
+									"    pm.variables.set(\"newOrderId\", response.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"amount\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/orders",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "验证新创建订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"新创建订单验证\", function () {",
+									"    var order = pm.response.json();",
+									"    var newOrderId = pm.variables.get(\"newOrderId\");",
+									"    ",
+									"    pm.expect(order.order_id).to.eql(parseInt(newOrderId));",
+									"    pm.expect(order.product_id).to.eql(1);",
+									"    pm.expect(order.amount).to.eql(5);",
+									"    pm.expect(order.total_price).to.eql(500);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/{{newOrderId}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"{{newOrderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "边界值测试",
+			"item": [
+				{
+					"name": "创建数量为1的订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"最小数量订单验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response.order_id).to.be.a('number');",
+									"    pm.variables.set(\"minOrderId\", response.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 2,\n  \"amount\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/orders",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "创建大数量订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"大数量订单验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response.order_id).to.be.a('number');",
+									"    pm.variables.set(\"maxOrderId\", response.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 3,\n  \"amount\": 100\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/orders",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "错误处理测试",
+			"item": [
+				{
+					"name": "获取不存在的订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"错误响应格式验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property('error');",
+									"    pm.expect(response.error).to.include('Order not found');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/99999",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除不存在的订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"删除不存在订单错误验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/99999",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "删除订单测试",
+			"item": [
+				{
+					"name": "创建用于删除的订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"保存订单ID用于删除\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.variables.set(\"deleteOrderId\", response.order_id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 4,\n  \"amount\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}/orders",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除订单",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"删除订单响应验证\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.be.an('object');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/{{deleteOrderId}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"{{deleteOrderId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "验证订单已删除",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"状态码应该是 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"确认订单已被删除\", function () {",
+									"    var response = pm.response.json();",
+									"    pm.expect(response).to.have.property('error');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://{{host}}/orders/{{deleteOrderId}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"{{deleteOrderId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "newOrderId",
+			"value": ""
+		},
+		{
+			"key": "deleteOrderId",
+			"value": ""
+		},
+		{
+			"key": "minOrderId",
+			"value": ""
+		},
+		{
+			"key": "maxOrderId",
+			"value": ""
+		}
+	]
+}
