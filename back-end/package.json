@@ -1,18 +1,22 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "订单管理系统后端 API 服务 - 专为初学者设计的 Node.js + Express + MySQL 项目",
+  "main": "app.js",
   "scripts": {
     "start": "NODE_ENV=dev node app.js",
+    "dev": "NODE_ENV=dev nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["nodejs", "express", "mysql", "api", "backend", "orders", "初学者"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
     "mysql": "^2.17.1",
     "superagent": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
